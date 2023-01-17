@@ -1,0 +1,50 @@
+<html>
+<link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+<link rel="stylesheet" href="/static/css/styles.css">
+<title>Литературные часы</title>
+<body>
+    <div id="main-wrapper">
+        <header>
+        </header>
+        <nav>
+        </nav>
+        <article>
+            <div class="text" id="text"><%- quote.text %></div>
+            <div class="author" id="author"><%= quote.author %>, «<%= quote.book %>»</div>
+        </article>
+        <footer id="footer">
+            Пополнить коллекцию цитат можно на <a href="https://github.com/coyotle/literature-clock-ru">GitHub</a>
+        </footer>
+    </div>
+
+    <script>
+        function updateClock(){
+          var quote_text = document.getElementById('text');
+          var quote_author = document.getElementById('author');
+          var now = new Date();
+          url = `/api/getquote?timestamp=${now.getTime()}`;
+
+          fetch(url).then(function(response) {
+            return response.json();
+          }).then(function(data) {
+            quote_text.innerHTML = data.text;
+            quote_author.innerHTML = `${data.author}, «${data.book}»`;
+          }).catch(function(err) {
+            console.log('Fetch Error :-S', err);
+          });
+        }
+      
+        function runClock() {
+            var now = new Date();
+            var timeToNextTick = (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
+            setTimeout(function() {
+              updateClock();
+              runClock();
+            }, timeToNextTick);
+        }
+      
+        updateClock();
+        runClock();
+        </script>
+</body>
+</html>
