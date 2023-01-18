@@ -1,5 +1,6 @@
 <html>
 <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css" integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous">
 <link rel="stylesheet" href="/static/css/styles.css">
 <title>Литературные часы</title>
 <body>
@@ -13,7 +14,12 @@
             <div class="author" id="author"><%= quote.author %>, «<%= quote.book %>»</div>
         </article>
         <footer id="footer">
-            Пополнить коллекцию цитат можно на <a href="https://github.com/coyotle/literature-clock-ru">GitHub</a>
+            Пополнить коллекцию цитат можно на <i class="fa fa-github"></i>
+            <a href="https://github.com/coyotle/literature-clock-ru">GitHub</a>
+             | Тёмный режим <p class="toggle">
+                <input type="checkbox" id="toggle" />
+                <label for="toggle"></label>
+             </p>
         </footer>
     </div>
 
@@ -46,5 +52,36 @@
         updateClock();
         runClock();
         </script>
+
+        <script>
+            const toggle = document.getElementById('toggle');
+            const body = document.body;
+
+            const theme = document.cookie
+                .split('; ')
+                .find((row) => row.startsWith('theme='))
+                ?.split('=')[1];
+            //alert(theme);
+            if (theme === "dark"){
+                body.classList.add('dark-theme');
+                toggle.checked = false;
+            }
+            else {
+                body.classList.add('light-theme');
+                toggle.checked = true;
+            }
+
+            toggle.addEventListener('input', e => {
+                const isChecked = e.target.checked;
+
+                if (isChecked) {
+                    body.classList.add('dark-theme');
+                    document.cookie = "theme=dark";
+                } else {
+                    body.classList.remove('dark-theme');
+                    document.cookie = "theme=light";
+                }
+            });
+    </script>
 </body>
 </html>

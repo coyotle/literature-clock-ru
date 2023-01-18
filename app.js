@@ -20,10 +20,13 @@ function GetQuote(date){
     let rows = db.prepare('SELECT * FROM quotes WHERE hour = ? AND min = ?').all(hour, mins);
 
     if (rows.length === 0)
-        for (var i =0; i<15; i++){
+        for (var i =0; i<30; i++){
             rows = db.prepare('SELECT * FROM quotes WHERE hour = ? AND min = ?').all(hour, mins - i);
             if (rows.length>0) break;
         }
+    
+    if (rows.length === 0)
+        rows = db.prepare('SELECT * FROM quotes WHERE hour = ? AND min = 0').all(hour);
 
     if (rows){
         random_quote = RandomItem(rows);
@@ -46,8 +49,11 @@ app.use('/static', express.static('public'));
 
 app.get('/', (req, res) => {
     const date = new Date();
-    const quote = GetQuote(date);
-    quote.text = md.render(quote.text);
+    let quote = GetQuote(date);
+    if(quote)
+        quote.text = md.render(quote.text);
+    else
+        quote={};
     res.render('index', { quote: quote })
 });
 
@@ -56,7 +62,7 @@ app.get('/api/getquote', (req, res) => {
     const timestamp = req.query.timestamp;
     date.setTime(timestamp);
     console.log(date);
-    const quote = GetQuote(date);
+    let quote = GetQuote(date);
     if(quote)
         quote.text = md.render(quote.text);
     else
