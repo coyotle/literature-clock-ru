@@ -1,7 +1,8 @@
-<html>
+<html lang="ru">
 <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css" integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous">
 <link rel="stylesheet" href="/static/css/styles.css">
+
 <title>Литературные часы</title>
 <body>
     <div id="main-wrapper">
@@ -14,7 +15,7 @@
             <div class="author" id="author"><%= quote.author %>, «<%= quote.book %>»</div>
         </article>
         <footer id="footer">
-            Пополнить коллекцию цитат можно на <i class="fa fa-github"></i>
+            <a href="/add"><i class="fa fa-plus"></i> Добавить цитату</a> | Проект на <i class="fa fa-github"></i>
             <a href="https://github.com/coyotle/literature-clock-ru">GitHub</a>
              | Тёмный режим <p class="toggle">
                 <input type="checkbox" id="toggle" />
@@ -22,66 +23,11 @@
              </p>
         </footer>
     </div>
-
-    <script>
-        function updateClock(){
-          var quote_text = document.getElementById('text');
-          var quote_author = document.getElementById('author');
-          var now = new Date();
-          url = `/api/getquote?timestamp=${now.getTime()}`;
-
-          fetch(url).then(function(response) {
-            return response.json();
-          }).then(function(data) {
-            quote_text.innerHTML = data.text;
-            quote_author.innerHTML = `${data.author}, «${data.book}»`;
-          }).catch(function(err) {
-            console.log('Fetch Error :-S', err);
-          });
-        }
-      
-        function runClock() {
-            var now = new Date();
-            var timeToNextTick = (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
-            setTimeout(function() {
-              updateClock();
-              runClock();
-            }, timeToNextTick);
-        }
-      
+    <script type="text/javascript" src="/static/clock.js"></script>
+    <script type="text/javascript" src="/static/toggle.js"></script>
+    <script>      
         updateClock();
         runClock();
-        </script>
-
-        <script>
-            const toggle = document.getElementById('toggle');
-            const body = document.body;
-
-            const theme = document.cookie
-                .split('; ')
-                .find((row) => row.startsWith('theme='))
-                ?.split('=')[1];
-            //alert(theme);
-            if (theme === "dark"){
-                body.classList.add('dark-theme');
-                toggle.checked = true;
-            }
-            else {
-                body.classList.add('light-theme');
-                toggle.checked = false;
-            }
-
-            toggle.addEventListener('input', e => {
-                const isChecked = e.target.checked;
-
-                if (isChecked) {
-                    body.classList.add('dark-theme');
-                    document.cookie = "theme=dark";
-                } else {
-                    body.classList.remove('dark-theme');
-                    document.cookie = "theme=light";
-                }
-            });
     </script>
 </body>
 </html>

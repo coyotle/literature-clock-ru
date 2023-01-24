@@ -1,0 +1,81 @@
+<html lang="ru">
+<link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css" integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous">
+<link rel="stylesheet" href="/static/css/styles.css">
+<title>Добавить цитату | Литературные часы</title>
+<body>
+    <div id="main-wrapper">
+        <header>
+        </header>
+        <nav>
+        </nav>
+        <article>
+            
+            <h1>Добавить цитату</h1>
+            <p>Используйте **<strong>двойные звездочки</strong>** для выделения времени в тексте. </p>
+            <% if(typeof(status) == 'undefined' || status == 'ok'){
+                hour = 0;
+                min = 0;
+                author='';
+                book='';
+                quote = '';
+            } %>
+            <form method="post">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <i class="fa fa-clock-o"></i> <select id="hour" name="hour">
+                <% for (var i =0; i <=23;  i++ ) { %> <option><%= i %></option>
+                <% } %>
+                </select>
+                : <select id="min" name="min">
+                <% for (var i =0; i <=59;  i++ ) { %> <option><%= i %></option>
+                <% } %>
+                </select>
+                <p><input type="text" name="author" value="<%= author %>" list="datalist" placeholder="Имя м фамилия автора">
+                <datalist id="datalist">
+                </datalist>
+                <p><input type="text" name="book" value="<%= book %>" placeholder="Название произведения">
+                <ul id="results"></ul>
+                <p><textarea id="quote" name="quote" rows=15 style="width:100%"><%= quote %></textarea>
+                <p><input type="checkbox" name="human"> Подтверждаю, я - человек 
+                <p><input type="submit" value="Отправить">
+            </form>
+            <% if (typeof(status) != "undefined") { %>
+                <% if (status == "ok") { %>
+            <p>Цитата будет добавлена в базу после модерации. Спасибо!</p>
+                <% } else { %>
+                    <p>Ошибка! <%= message %>
+                <% } %>
+            <% } %>
+        </article>
+
+        <footer id="footer">
+            <a href="/"><i class="fa fa-angle-left"></i> Назад</a> | Проект на <i class="fa fa-github"></i>
+            <a href="https://github.com/coyotle/literature-clock-ru">GitHub</a>
+             | Тёмный режим <p class="toggle">
+                <input type="checkbox" id="toggle" />
+                <label for="toggle"></label>
+             </p>
+        </footer>
+    </div>
+
+    <script>
+        var dataList = document.getElementById('datalist');
+
+        fetch('/api/getauthors').then(function(response) {
+            return response.json();
+        }).then(function(data) {
+            data.forEach(item => {
+                var option = document.createElement('option');
+                console.log(item.author);
+                option.value = item.author;
+                option.text = item.author;
+                dataList.appendChild(option);  
+            })
+        }).catch(function(err) {
+        console.log('Fetch Error :-S', err);
+        });
+    </script>
+
+<script type="text/javascript" src="/static/toggle.js"></script>
+</body>
+</html>
