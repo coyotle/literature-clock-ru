@@ -25,19 +25,21 @@ function GetQuote(date){
     const hour = date.getHours();
     const mins = date.getMinutes();
 
-    let rows = db.prepare('SELECT * FROM quotes WHERE approved=1 AND hour = ? AND min = ?').all(hour, mins);
+    let rows = db.prepare('SELECT *, (60*hour+min) as quote_mins, (60*?+?) as user_mins FROM quotes WHERE approved=1 AND user_mins - quote_mins >=0 AND user_mins - quote_mins <= 30 ORDER BY quote_mins DESC').all(hour, mins);
 
-    if (rows.length === 0)
-        for (var i =0; i<30; i++){
-            rows = db.prepare('SELECT * FROM quotes WHERE approved=1 AND hour = ? AND min = ?').all(hour, mins - i);
-            if (rows.length>0) break;
+    let quotes=[];
+    for (var i=0; i<rows.length; i++){
+        if (i == 0){
+            quotes.push(rows[i]);
         }
-    
-    if (rows.length === 0)
-        rows = db.prepare('SELECT * FROM quotes WHERE approved=1 AND hour = ? AND min = 0').all(hour);
+        else if (rows[i-1].quote_mins == rows[i].quote_mins) {
+            quotes.push(rows[i]);
+        }
+        else break;
+    }
 
-    if (rows){
-        random_quote = RandomItem(rows);
+    if (quotes.length>0){
+        random_quote = RandomItem(quotes);
         return random_quote;
     }
     else{
