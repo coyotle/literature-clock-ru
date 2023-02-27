@@ -1,6 +1,6 @@
 ## Литературные часы
 
-Это страница проекта литературных часов, основано на идеи [Jaap Meijers](http://www.eerlijkemedia.nl/) и [JohannesNE/literature-clock](https://github.com/JohannesNE/literature-clock). В данный момент в базе около 420 цитат, в основном русской классики.
+Это страница проекта литературных часов, основано на идеи [Jaap Meijers](http://www.eerlijkemedia.nl/) и [JohannesNE/literature-clock](https://github.com/JohannesNE/literature-clock). В данный момент в базе около 440 цитат, в основном русской классики.
 
 Пример использования базы можно посмотеть по ссылке https://clock.coyotle.ru/
 
